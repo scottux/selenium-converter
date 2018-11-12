@@ -1,0 +1,14 @@
+{
+  "name": "@qlms/selenium-converter",
+  "version": "1.0.0",
+  "description": "Converts Selenium IDE files to various formats",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "xmldom": "^0.1.27"
+  }
+}
