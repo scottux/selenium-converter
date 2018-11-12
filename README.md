@@ -5,6 +5,15 @@ Quick Use:
 npm install && npm start "input/directory" "output/directory"
 ```
 
+ - input/
+   - directory/
+     - foo.html
+     - bar.html
+ - output/
+   - directory/
+     - foo.cs
+     - bar.cs
+
 ## What it does
 
 This tool is responsible for doing batch conversions of Selenium IDE
