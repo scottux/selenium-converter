@@ -2,7 +2,7 @@
 
 Quick Use:
 ```
-node index.js "input/directory" "output/directory"
+npm install && npm start "input/directory" "output/directory"
 ```
 
 ## What it does
