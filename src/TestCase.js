@@ -76,7 +76,7 @@ TestCase.prototype.setBaseURL = function (baseURL) {
  */
 TestCase.prototype.getBaseURL = function () {
     if (!this.baseURL || this.baseURL === "") {
-        return "https://portalbeta.qlmortgageservices.com/";
+        return "https://www.example.com/";
     } else {
         return this.baseURL;
     }
