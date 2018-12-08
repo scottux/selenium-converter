@@ -27,20 +27,58 @@ let options = {
     escapeDollar: "false"
 };
 
-fs.readdir(inputDirectory, (err, filenames) => {
+
+
+function filewalker(dir, done) {
+    let results = [];
+
+    fs.readdir(dir, function(err, list) {
+        if (err) return done(err);
+
+        let pending = list.length;
+
+        if (!pending) return done(null, results);
+
+        list.forEach(function(file){
+            file = path.resolve(dir, file);
+
+            fs.stat(file, function(err, stat){
+                // If directory, execute a recursive call
+                if (stat && stat.isDirectory()) {
+                    // Add directory to array [comment if you need to remove the directories from the array]
+                    results.push(file);
+
+                    filewalker(file, function(err, res){
+                        results = results.concat(res);
+                        if (!--pending) done(null, results);
+                    });
+                } else {
+                    results.push(file);
+
+                    if (!--pending) done(null, results);
+                }
+            });
+        });
+    });
+}
+
+
+
+filewalker(inputDirectory, (err, filenames) => {
     if (err) {
         throw err;
     }
 
     filenames.forEach((filename) => {
+
         // only read html files
         if (filename.substr(-4) === "html") {
-            fs.readFile(inputDirectory + filename, "utf-8", (err, testHtml) => {
+            fs.readFile(filename, "utf-8", (err, testHtml) => {
                 if (err) {
                     throw err;
                 }
                 filename = filename.replace(/\.html/g, "");
-                writeFile(outputDirectory, filename, testHtml);
+                writeFile(outputDirectory, filename.replace(inputDirectory, ''), testHtml);
             });
         }
     });
@@ -55,6 +93,21 @@ fs.readdir(inputDirectory, (err, filenames) => {
 function writeFile(outputDirectory, filename, testHtml) {
     let file = outputDirectory + filename + formatter.testcaseExtension;
 
+
+    let folders = (outputDirectory + filename).split(path.sep);
+    folders.pop();
+    folders.reduce((prevPath, folder) => {
+            console.log(prevPath, folder);
+            const currentPath = path.join(prevPath, folder, path.sep);
+            console.log("making dir: ", currentPath);
+            fs.mkdir(currentPath, err => {
+                if (err && !(err.code === "EEXIST" || err.code === "EISDIR")) { console.log((outputDirectory + filename), err); throw "up"; }
+            });
+            return currentPath;
+        }, '');
+
+
+
     fs.access(file, fs.constants.R_OK | fs.constants.W_OK, (err2) => {
         console.log("Reading File", filename);
         fs.writeFile(file, createTestCase(testHtml, filename), (err) => {
@@ -65,6 +118,7 @@ function writeFile(outputDirectory, filename, testHtml) {
             console.log("-> " + file);
         });
     });
+
 }
 
 /**

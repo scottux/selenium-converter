@@ -1,3 +1,6 @@
+const Command = require("./Command");
+const Comment = require("./Comment");
+
 /* SeleneseMapper changes one Selenese command to another that is more suitable for WebDriver export
  */
 function SeleneseMapper() {
